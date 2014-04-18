@@ -1,0 +1,18 @@
+# Java class files
+*.class
+
+# generated files
+.gradle/
+bin/
+build/
+dst/
+
+# log files
+*.log
+
+# Mac OSuX clutter
+*.DS_Store
+
+# temp files
+*.*~
+

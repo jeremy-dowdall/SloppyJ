@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SloppyJ
+Bundle-SymbolicName: SloppyJ-Library
+Bundle-Version: 0.3.0.qualifier
+Export-Package: fm.strength.sloppyj
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
