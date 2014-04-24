@@ -40,7 +40,7 @@ public class Jay {
     
     Object data;
 
-    private ObjectWrapper wrapper;
+    private Class<?> objType;
     private Adapter adapter;
     private Mapper mapper;
     private Set<String> skip;
@@ -67,7 +67,7 @@ public class Jay {
     			data = find(0, data);
     		}
     		else if(type != data.getClass()) {
-				if(wrapper == null) wrapper = new ObjectWrapper(type);
+				if(objType == null) objType = type;
 				if(!(data instanceof String)) data = new JsonBuilder(this).toJson();
 				data = new JsonParser(this, type.isArray()).toJava();
 			}
@@ -99,7 +99,7 @@ public class Jay {
     
     @SuppressWarnings("unchecked")
 	public <E> List<E> asList(Class<E> elementType) {
-		wrapper = new ObjectWrapper(elementType);
+		objType = elementType;
 		return (List<E>) as(List.class);
     }
     
@@ -145,9 +145,8 @@ public class Jay {
 
     Object adaptFromJson(ObjectWrapper wrapper, String key, Object json) {
     	if(adapter != null) {
-    		if(wrapper == null) wrapper = getWrapper();
-    		Class<?> type = wrapper.getType(key);
-    		return (type != null) ? adapter.fromJson(type, json) : json;
+    		Class<?> type = (wrapper != null) ? wrapper.getType(key) : Object.class;
+    		if(type != null) return adapter.fromJson(type, json);
     	}
     	return json;
     }
@@ -157,7 +156,7 @@ public class Jay {
     }
     
     ObjectWrapper getWrapper() {
-    	return (wrapper != null) ? wrapper : (wrapper = new ObjectWrapper(Map.class));
+    	return new ObjectWrapper(objType);
     }
     
     boolean include(String key) {

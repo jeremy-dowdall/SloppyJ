@@ -77,7 +77,7 @@ Mapping custom keys, such as switching between CamelCase and snake_case, can be 
 ```java
 Jay.get(data).withMapper(new Mapper() {
     public String fromJson(String key) {
-    	return toCamel(key);
+        return toCamel(key);
 	}
 	public String toJson(String key) {
 		return toSnake(key);
@@ -145,13 +145,23 @@ Sloppy input
 SloppyJ is all about letting you off easy when it comes to formatting your input JSON.
 
 * double quotes, single quotes, no quotes - if you can read it, it's probably fine
+
+```java
+Jay.get("user.name:bob").asJson();   // -> {"user.name":"bob"}
+```
+
 * brackets and braces... or not
 
 ```java
-Jay.get("a,b,c,d,e,f,g,h").asList();
-// > ["a","b","c","d","e","f","g","h"]
+Jay.get("a,b,c,d,e,f,g,h").asJson(); // -> ["a","b","c","d","e","f","g","h"]
+Jay.get("a:b:c:d:e:f:g:h").asJson(); // -> {"a":{"b":{"c":{"d":{"e":{"f":{"g":"h"}}}}}}}
+```
 
-Jay.get("a:b:c:d:e:f:g:h").asMap();
-// > {"a":{"b":{"c":{"d":{"e":{"f":{"g":"h"}}}}}}}
+* commas schmommas - no need to use them between object or arrays
+
+```java
+Jay.get("[][][]").asJson();          // -> [[],[],[]]
+Jay.get("[1,2][3,4][5,6]").asJson(); // -> [[1,2],[3,4],[5,6]]
+Jay.get("{a:b}{c:d}{e:f}").asJson(); // -> [{"a":"b"},{"c":"d"},{"e":"f"}]
 ```
 

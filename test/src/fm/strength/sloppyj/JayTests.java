@@ -32,6 +32,12 @@ public class JayTests {
 
     @Test
     public void test_find_inObject() throws Exception {
+    	
+    	System.out.println(Jay.get("[][][]").asJson());          // -> [[],[],[]]
+    	System.out.println(Jay.get("[1,2][3,4][5,6]").asJson()); // -> [[1,2],[3,4],[5,6]]
+    	System.out.println(Jay.get("{a:b}{c:d}{e:f}").asJson()); // -> [{"a":"b"},{c:d}{e:f}]
+
+    	
 		Map object = new HashMap() {{
     		put("a", new HashMap() {{
     			put("b", "c");
@@ -115,6 +121,18 @@ public class JayTests {
 		assertThat(Jay.get("[ 1.98 , .982 ]").asList()).containsExactly(1.98,0.982);
 		assertThat(Jay.get("[ .9.8.2. ]").asList()).containsExactly(".9.8.2.");
 		assertThat(Jay.get("[ 1.9 8.2 ]").asList()).containsExactly("1.9 8.2");
+	}
+	
+	@Test
+	public void test_fromJson_arraysWithoutCommas() throws Exception {
+		assertThat(Jay.get("[][][]").asJson()).isEqualTo("[[],[],[]]");
+		assertThat(Jay.get("{}{}{}").asJson()).isEqualTo("[{},{},{}]");
+		assertThat(Jay.get("[1,2][3,4][5,6]").asJson()).isEqualTo("[[1,2],[3,4],[5,6]]");
+		assertThat(Jay.get("{a:b}{c:d}{e:f}").asJson()).isEqualTo("[{\"a\":\"b\"},{\"c\":\"d\"},{\"e\":\"f\"}]");
+		assertThat(Jay.get("[[][][]]").asJson()).isEqualTo("[[],[],[]]");
+		assertThat(Jay.get("[{}{}{}]").asJson()).isEqualTo("[{},{},{}]");
+		assertThat(Jay.get("[[1,2][3,4][5,6]]").asJson()).isEqualTo("[[1,2],[3,4],[5,6]]");
+		assertThat(Jay.get("[{a:b}{c:d}{e:f}]").asJson()).isEqualTo("[{\"a\":\"b\"},{\"c\":\"d\"},{\"e\":\"f\"}]");
 	}
 
 	@Test

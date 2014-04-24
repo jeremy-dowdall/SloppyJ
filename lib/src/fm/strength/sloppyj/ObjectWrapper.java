@@ -95,6 +95,7 @@ class ObjectWrapper {
 	
 	private static boolean useMap(Class<?> type) {
 		return (
+				type == null ||
 				type.isPrimitive() || type == Object.class || type == Object[].class ||
 				Map.class.isAssignableFrom(type) || Iterable.class.isAssignableFrom(type) ||
 				String.class.isAssignableFrom(type) || Number.class.isAssignableFrom(type) ||

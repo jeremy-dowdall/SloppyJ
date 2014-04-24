@@ -36,38 +36,41 @@ public class JsonParser {
 	
 	
 	Object toJava() {
-		return ff() ? getValue(null, null) : null;
-	}
-	
-	
-	private boolean go() {
-		if(pos < s.length()) {
-			switch(s.charAt(pos)) { case ']': case '}': case ':': case ',': return false; }
-			return true;
+		ArrayList<Object> result = new ArrayList<Object>(1);
+		while(ff()) {
+			result.add(getValue(null, null));
 		}
-		return false;
+		if(result.size() == 0) return null;
+		if(result.size() == 1) return result.get(0);
+		return array ? result.toArray() : result;
 	}
-
+	
+	
 	private boolean ff() {
-		while(go()) {
-			if(!Character.isWhitespace(s.charAt(pos))) return true;
+		return ff((char) 0) == ' ';
+	}
+	
+	private char ff(char f) {
+		while(pos < s.length()) {
+			char c = s.charAt(pos);
+			if(c == f || c == ']' || c == '}' || c == ':' || c == ',') return c;
+			if(f == 0) {
+				if(!Character.isWhitespace(c)) return ' ';
+			} else {
+				if(c == '[' || c == '{') return c;
+			}
 			pos++;
 		}
-		return false;
-	}
-	
-	private boolean ff(char f) {
-		boolean go;
-		while((go = go()) && s.charAt(pos) != f) pos++;
-		return go || (pos < s.length() && s.charAt(pos) == f);
+		return 0;
 	}
 
 	private Object getArray(ObjectWrapper parent, String key) {
 		ArrayList<Object> list = new ArrayList<Object>();
 		while(ff()) {
 			list.add(getValue(parent, key));
-			if(ff(',')) pos++;
-			else break;
+			char c = ff(',');
+			if(c == ',') pos++;
+			else if(c != '[' && c != '{') break;
 		}
 		pos++;
 		list.trimToSize();
@@ -78,12 +81,12 @@ public class JsonParser {
 		ObjectWrapper wrapper = (parent != null) ? parent.get(parentKey) : jay.getWrapper();
 		while(ff()) {
 			String key = getKey();
-			if(ff(':')) {
+			if(ff(':') == ':') {
 				pos++;
-				if(wrapper != null && jay.include(key)) {
+				if(ff() && wrapper != null && jay.include(key)) {
 					wrapper.set(key, getValue(wrapper, key));
 				}
-				if(ff(',')) pos++;
+				if(ff(',') == ',') pos++;
 				else break;
 			}
 		}
@@ -94,8 +97,10 @@ public class JsonParser {
 	private String getKey() {
 		String key = null;
 		switch(s.charAt(pos)) {
-		case '"':  pos++; key = getString(); break;
-		case '\'': pos++; key = getString(); break;
+		case '"':
+		case '\'':
+			pos++; key = getString();
+			break;
 		default:
 			int start = pos;
 			while(pos < s.length() && s.charAt(pos) != ':' && s.charAt(pos) != ',' && s.charAt(pos) != '}') pos++;
@@ -154,9 +159,7 @@ public class JsonParser {
 			pos++;
 		} while(number && ff() && s.charAt(pos) != ',');
 
-		ff(',');
-		
-		if(pos < s.length() && s.charAt(pos) == ':') {
+		if(ff(',') == ':') {
 			pos = start;
 			return getObject(parent, key);
 		} else {

@@ -117,7 +117,7 @@ public class ModelTests {
     @Test
     public void test_fromJson_withInlineInits() throws Exception {
         Class03 result = Jay.get("name:joe,weight:150").as(Class03.class);
-System.out.println(result);
+
         assertThat(result).isNotNull();
         assertThat(result.name).isEqualTo("bob"); // name cannot be written - it was inlined by the compiler
         assertThat(result.weight).isEqualTo(100); // weight cannot be written - it was inlined by the compiler
