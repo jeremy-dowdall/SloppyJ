@@ -125,7 +125,7 @@ Some caveats:
 
 To be clear about item #2 - if a final field is initialised to a non-null in its declaration, the compiler will inline it and you'll get some wonky behavior:
 ```java
-class MyModel {
+class MyObject {
     public final String name = "bob";
 }
 
@@ -157,7 +157,7 @@ Jay.get("a,b,c,d,e,f,g,h").asJson(); // -> ["a","b","c","d","e","f","g","h"]
 Jay.get("a:b:c:d:e:f:g:h").asJson(); // -> {"a":{"b":{"c":{"d":{"e":{"f":{"g":"h"}}}}}}}
 ```
 
-* commas schmommas - no need to use them between object or arrays
+* commas schmommas - no need to use them between objects or arrays
 
 ```java
 Jay.get("[][][]").asJson();          // -> [[],[],[]]
