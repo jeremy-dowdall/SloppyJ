@@ -15,8 +15,8 @@
  */
 package fm.strength.sloppyj;
 
-import static fm.strength.sloppyj.Mapper.CamelSnake.camel;
-import static fm.strength.sloppyj.Mapper.CamelSnake.snake;
+import static fm.strength.sloppyj.SnakeMapper.camel;
+import static fm.strength.sloppyj.SnakeMapper.snake;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.junit.Test;

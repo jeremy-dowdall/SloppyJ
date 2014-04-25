@@ -27,8 +27,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import fm.strength.sloppyj.Mapper.CamelSnake;
-
 @SuppressWarnings({ "serial", "rawtypes", "unchecked" })
 public class JayTests {
 
@@ -320,7 +318,7 @@ public class JayTests {
 	
 	@Test
 	public void test_fromJson_withCamelSnakeMapper() throws Exception {
-		Map<String, Object> map = Jay.get("json_key:b").withMapper(new Mapper.CamelSnake()).asMap();
+		Map<String, Object> map = Jay.get("json_key:b").withMapper(new SnakeMapper()).asMap();
 		
 		assertThat(map).contains(entry("jsonKey", "b"));
 	}
@@ -331,7 +329,7 @@ public class JayTests {
 			put("javaKey", "b");
 		}};
 		
-		String json = Jay.get(map).withMapper(new Mapper.CamelSnake()).asJson();
+		String json = Jay.get(map).withMapper(new SnakeMapper()).asJson();
 		
 		assertThat(json).isEqualTo("{\"java_key\":\"b\"}");
 	}
