@@ -73,7 +73,7 @@ try {
 
 Mapping / custom keys
 ---------------------
-Mapping custom keys, such as switching between CamelCase and snake_case, can be handled using a Mapper:
+Mapping custom keys can be handled using a Mapper:
 ```java
 Jay.get(data).withMapper(new Mapper() {
     public String fromJson(String key) {
@@ -83,6 +83,11 @@ Jay.get(data).withMapper(new Mapper() {
 		return toSnake(key);
 	}
 }).asMap();
+```
+
+For the relatively standard mapping between snake_case (in the JSON) and Java variable names, use the Mapper.CamelSnake class:
+```java
+Jay.get(data).withMapper(new Mapper.CamelSnake()).asMap();
 ```
 
 Adaptation
@@ -125,7 +130,7 @@ Some caveats:
 
 To be clear about item #2 - if a final field is initialised to a non-null in its declaration, the compiler will inline it and you'll get some wonky behavior:
 ```java
-class MyObject {
+class MyModel {
     public final String name = "bob";
 }
 
@@ -157,7 +162,7 @@ Jay.get("a,b,c,d,e,f,g,h").asJson(); // -> ["a","b","c","d","e","f","g","h"]
 Jay.get("a:b:c:d:e:f:g:h").asJson(); // -> {"a":{"b":{"c":{"d":{"e":{"f":{"g":"h"}}}}}}}
 ```
 
-* commas schmommas - no need to use them between objects or arrays
+* commas schmommas - no need to use them between object or arrays
 
 ```java
 Jay.get("[][][]").asJson();          // -> [[],[],[]]

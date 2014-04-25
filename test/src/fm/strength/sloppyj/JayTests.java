@@ -27,17 +27,13 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import fm.strength.sloppyj.Mapper.CamelSnake;
+
 @SuppressWarnings({ "serial", "rawtypes", "unchecked" })
 public class JayTests {
 
     @Test
     public void test_find_inObject() throws Exception {
-    	
-    	System.out.println(Jay.get("[][][]").asJson());          // -> [[],[],[]]
-    	System.out.println(Jay.get("[1,2][3,4][5,6]").asJson()); // -> [[1,2],[3,4],[5,6]]
-    	System.out.println(Jay.get("{a:b}{c:d}{e:f}").asJson()); // -> [{"a":"b"},{c:d}{e:f}]
-
-    	
 		Map object = new HashMap() {{
     		put("a", new HashMap() {{
     			put("b", "c");
@@ -320,6 +316,24 @@ public class JayTests {
 		}).asJson();
 		
 		assertThat(json).isEqualTo("{\"special_key\":\"b\"}");
+	}
+	
+	@Test
+	public void test_fromJson_withCamelSnakeMapper() throws Exception {
+		Map<String, Object> map = Jay.get("json_key:b").withMapper(new Mapper.CamelSnake()).asMap();
+		
+		assertThat(map).contains(entry("jsonKey", "b"));
+	}
+	
+	@Test
+	public void test_fromMap_withCamelSnakeMapper() throws Exception {
+		Map map = new HashMap() {{
+			put("javaKey", "b");
+		}};
+		
+		String json = Jay.get(map).withMapper(new Mapper.CamelSnake()).asJson();
+		
+		assertThat(json).isEqualTo("{\"java_key\":\"b\"}");
 	}
 	
 }
