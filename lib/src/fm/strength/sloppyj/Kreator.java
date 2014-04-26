@@ -52,7 +52,7 @@ public abstract class Kreator {
         }
     }
     
-    static <T> T newInstance(Class<T> type) {
+    public static <T> T newInstance(Class<T> type) {
         try {
             return instance.createNewInstance(type);
         } catch(IllegalAccessException e) {
