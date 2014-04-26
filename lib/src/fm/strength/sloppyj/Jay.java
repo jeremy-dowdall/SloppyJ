@@ -54,7 +54,8 @@ public class Jay {
     }
 
     
-    public <T> T as(Class<T> type) {
+    @SuppressWarnings("unchecked")
+	public <T> T as(Class<T> type) {
     	if(type == null) {
     		return null;
     	}
@@ -63,31 +64,36 @@ public class Jay {
     	}
     	if(data != null) {
     		if(path != null) {
-    			if(data instanceof String) data = new JsonParser(this, type.isArray()).toJava();
+    			if(data instanceof String) data = new JsonParser(this, type).toJava();
     			data = find(0, data);
     		}
     		else if(type != data.getClass()) {
 				if(objType == null) objType = type;
 				if(!(data instanceof String)) data = new JsonBuilder(this).toJson();
-				data = new JsonParser(this, type.isArray()).toJava();
+				data = new JsonParser(this, type).toJava();
 			}
     	}
     	if(data == null) {
     		if(List.class.isAssignableFrom(type)) data = new ArrayList<>(0);
     	}
-    	return type.isInstance(data) ? type.cast(data) : null;
+    	if(type.isPrimitive()) {
+    		if(type == boolean.class) return (T) ((data instanceof Boolean) ? data : false);
+    		if(type == long.class) return (T) ((data instanceof Long) ? data : 0l);
+    		return (T) ((data instanceof Integer) ? data : 0);
+    	}
+    	return (type != null && type.isInstance(data)) ? type.cast(data) : null;
     }
     
     public String asJson() {
     	if(data == null) return null;
-		if(data instanceof String) data = new JsonParser(this, false).toJava();
+		if(data instanceof String) data = new JsonParser(this, Object.class).toJava();
     	if(path != null) data = find(0, data);
 		return new JsonBuilder(this).toJson();
     }
     
     public List<String> asKeys() {
     	if(data == null) return new ArrayList<String>(0);
-    	if(data instanceof String) data = new JsonParser(this, false).toJava();
+    	if(data instanceof String) data = new JsonParser(this, Object.class).toJava();
     	if(path != null) data = find(0, data);
     	return addKeys(data, new ArrayList<String>());
     }

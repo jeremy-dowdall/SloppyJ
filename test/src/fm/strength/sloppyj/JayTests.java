@@ -334,4 +334,38 @@ public class JayTests {
 		assertThat(json).isEqualTo("{\"java_key\":\"b\"}");
 	}
 	
+	@Test
+	public void test_booleans() throws Exception {
+		assertThat(Jay.get("{a:1}").at("a").as(boolean.class)).isEqualTo(false);
+		assertThat(Jay.get("{a:1}").at("a").as(Boolean.class)).isNull();
+		assertThat(Jay.get("{a:false}").at("a").as(boolean.class)).isEqualTo(false);
+		assertThat(Jay.get("{a:false}").at("a").as(Boolean.class)).isEqualTo(false);
+		assertThat(Jay.get("{a:true}").at("a").as(boolean.class)).isEqualTo(true);
+		assertThat(Jay.get("{a:true}").at("a").as(Boolean.class)).isEqualTo(true);
+		assertThat(Jay.get("{a:null}").at("a").as(boolean.class)).isEqualTo(false);
+		assertThat(Jay.get("{a:null}").at("a").as(Boolean.class)).isNull();
+		assertThat(Jay.get("{}").at("a").as(boolean.class)).isEqualTo(false);
+		assertThat(Jay.get("{}").at("a").as(Boolean.class)).isNull();
+	}
+	
+	@Test
+	public void test_integers() throws Exception {
+		assertThat(Jay.get("{a:1}").at("a").as(int.class)).isEqualTo(1);
+		assertThat(Jay.get("{a:1}").at("a").as(Integer.class)).isEqualTo(1);
+		assertThat(Jay.get("{a:null}").at("a").as(int.class)).isEqualTo(0);
+		assertThat(Jay.get("{a:null}").at("a").as(Integer.class)).isNull();
+		assertThat(Jay.get("{}").at("a").as(int.class)).isEqualTo(0);
+		assertThat(Jay.get("{}").at("a").as(Integer.class)).isNull();
+	}
+	
+	@Test
+	public void test_longs() throws Exception {
+		assertThat(Jay.get("{a:1}").at("a").as(long.class)).isEqualTo(1);
+		assertThat(Jay.get("{a:1}").at("a").as(Long.class)).isEqualTo(1);
+		assertThat(Jay.get("{a:null}").at("a").as(long.class)).isEqualTo(0);
+		assertThat(Jay.get("{a:null}").at("a").as(Long.class)).isNull();
+		assertThat(Jay.get("{}").at("a").as(long.class)).isEqualTo(0);
+		assertThat(Jay.get("{}").at("a").as(Long.class)).isNull();
+	}
+
 }
