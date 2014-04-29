@@ -183,6 +183,17 @@ public class JayTests {
 	}
 
 	@Test
+	public void test_fromJson_withEscapeChars() throws Exception {
+		assertThat(Jay.get("{url:'http:\\/\\/example.com'").at("url").as(String.class)).isEqualTo("http://example.com");
+	}
+	
+	@Test
+	public void test_fromJson_withExponent() throws Exception {
+		assertThat(Jay.get("{i:1.4e+2").at("i").as(Double.class)).isEqualTo(Double.valueOf("1.4e+2"));
+		assertThat(Jay.get("{i:1.2e-3").at("i").as(Double.class)).isEqualTo(Double.valueOf("1.2e-3"));
+	}
+	
+	@Test
 	public void test_fromJson_toJson_withParameterizedKeysAndValues() throws Exception {
 		assertThat(Jay.get("?:[?,?]").withArgs("a","b","c").asJson()).isEqualTo("{\"a\":[\"b\",\"c\"]}");
 	}

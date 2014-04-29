@@ -134,32 +134,43 @@ public class JsonParser {
 		}
 		
 		int start = pos;
-		boolean number = true;
-		boolean decimal = false;
+		boolean num = true;
+		boolean dec = false;
+		boolean exp = false;
 		
 		do {
 			switch(s.charAt(pos)) {
 			case '-':
-				if(pos != start) number = false;
+				if(pos != start) num = false;
 				break;
 			case '.':
-				if(decimal) number = false;
-				else decimal = true;
+				if(dec) num = false;
+				else dec = true;
 				break;
 			case '0': case '1': case '2': case '3': case '4':
 			case '5': case '6': case '7': case '8': case '9':
 				// number still true
 				break;
+			case 'e': case 'E':
+				if(!exp && pos != start && pos+1 < s.length()) {
+					char p = s.charAt(pos-1);
+					char n = s.charAt(++pos);
+					if(Character.isDigit(p) && (n == '+' || n == '-')) {
+						exp = true;
+						break;
+					}
+				}
+				num = false;
+				break;
 			default:
-				// TODO support exponent format
-				number = false;
+				num = false;
 				break;
 			}
 			if(pos > start) {
-				if(Character.isWhitespace(s.charAt(pos-1))) number = false;
+				if(Character.isWhitespace(s.charAt(pos-1))) num = false;
 			}
 			pos++;
-		} while(number && ff() && s.charAt(pos) != ',');
+		} while(num && ff() && s.charAt(pos) != ',');
 
 		if(ff(',') == ':') {
 			pos = start;
@@ -167,8 +178,8 @@ public class JsonParser {
 		} else {
 			String value = newString(start, pos);
 			if(value.length() > 0) {
-				if(number) {
-					if(decimal)  return Double.valueOf(value);
+				if(num) {
+					if(dec || exp) return Double.valueOf(value);
 					else if(type == long.class || type == Long.class) return Long.valueOf(value);
 					else return Integer.valueOf(value);
 				}
@@ -183,8 +194,32 @@ public class JsonParser {
 	}
 
     private String newString(int start, int end) {
-    	// TODO handle special characters
-        return new String(s.substring(start, end).trim());
+    	StringBuilder sb = new StringBuilder(end-start);
+    	for(int i = start; i < end; i++) {
+    		char c = s.charAt(i);
+    		if(c == '\\') {
+    			i++;
+    			if(i < end) {
+    				c = s.charAt(i);
+    				switch(c) {
+    				case 'b': case 't': case 'n': case 'f': case 'r':
+    				case '"': case '/': case '\'': case '\\': 
+    					sb.append(c);
+    					break;
+    				case 'u':
+    					if(i+4 < end) {
+    						sb.append((char)Integer.parseInt(s.substring(i, i+4), 16));
+    						break;
+    					} // else fall through and throw exception
+    				default:
+    					throw new IllegalArgumentException("illegal escape");
+    				}
+    			}
+    		} else {
+    			sb.append(c);
+    		}
+    	}
+    	return sb.toString().trim();
     }
 
 }
