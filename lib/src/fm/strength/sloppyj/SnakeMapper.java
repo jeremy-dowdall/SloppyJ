@@ -1,5 +1,6 @@
 package fm.strength.sloppyj;
 
+import static java.lang.Character.isDigit;
 import static java.lang.Character.isUpperCase;
 import static java.lang.Character.toLowerCase;
 import static java.lang.Character.toUpperCase;
@@ -8,26 +9,28 @@ public class SnakeMapper implements Mapper {
 	
 	@Override
 	public String fromJson(String key) {
-		return camel(key);
+		return fromSnake(key);
 	}
 	
 	@Override
 	public String toJson(String key) {
-		return snake(key);
+		return toSnake(key);
 	}
 	
 	/**
-	 * converts string to pseudo CamelCase
-	 * (the first character is always lower case, following the Java variable naming conventions)
+	 * convert a string from snake_case to Java style variable names
+	 * (like CamelCase except the first character is always lower case)
 	 * <p>
 	 * key -> key, my_key -> myKey,
-	 * KEY -> key, myKey -> myKey,
-	 * _key -> key
+	 * KEY -> key, myKey -> myKey, my_key_100 -> myKey100
+	 * </p>
+	 * <p> note that leading underscores will also be removed:
+	 * _key -> key)
 	 * </p>
 	 * @param s the string to be converted
 	 * @return a new string converted to CamelCase; null if the input string is null, empty, or contains only underscores
 	 */
-	public static String camel(String s) {
+	public static String fromSnake(String s) {
 		if(s == null) {
 			return null;
 		}
@@ -49,27 +52,31 @@ public class SnakeMapper implements Mapper {
 	}
 
 	/**
-	 * converts string to snake_case:
+	 * convert a CamelCase string to snake_case:
 	 * <p>
 	 * key -> key, MyKey -> my_key,
-	 * KEY -> key, myKey -> my_key
+	 * KEY -> key, myKey -> my_key, myKey100 -> my_key_100
 	 * </p>
 	 * @param s the string to be converted
 	 * @return a new string converted to snake_case; null if the input string is null or empty
 	 */
-	public static String snake(String s) {
+	public static String toSnake(String s) {
 		if(s == null) {
 			return null;
 		}
 
+		char p = 0;
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
-			if(i > 0 && isUpperCase(c)) sb.append('_');
+			if(i > 0 && (isUpperCase(c) || (isDigit(c) && !isDigit(p)))) {
+				sb.append('_');
+			}
 			sb.append(toLowerCase(c));
+			p = c;
 		}
 
 		return (sb.length() > 0) ? sb.toString() : null;
 	}
-
+	
 }
