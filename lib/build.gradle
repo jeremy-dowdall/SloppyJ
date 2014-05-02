@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 group 'fm.strength'
-version '0.8.2'
+version '0.8.3'
 
 sourceSets {
     main {
