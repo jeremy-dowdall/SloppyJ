@@ -23,10 +23,15 @@ import java.util.Map;
 
 class ObjectWrapper {
 	
+	private final Class<?> type;
 	private final Object object;
 
 	public ObjectWrapper(Class<?> type) {
-		if(useMap(type)) {
+		this(type, type);
+	}
+	public ObjectWrapper(Class<?> type, Class<?> objectType) {
+		this.type = type;
+		if(useMap(objectType)) {
 			this.object = new LinkedHashMap<>();
 		}
 		else {
@@ -40,11 +45,15 @@ class ObjectWrapper {
 	
 	public ObjectWrapper get(String key) {
 		if(object instanceof Map) {
-			return new ObjectWrapper(Map.class);
+			return new ObjectWrapper(type);
 		} else {
 			try {
-				Field field = object.getClass().getDeclaredField(key);
+				Field field = type.getDeclaredField(key);
 				Class<?> fieldType = field.getType();
+				if(Map.class.isAssignableFrom(fieldType)) {
+					fieldType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[1];
+					return new ObjectWrapper(fieldType, Map.class);
+				}
 				if(List.class.isAssignableFrom(fieldType)) {
 	                fieldType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
 				}
@@ -58,7 +67,7 @@ class ObjectWrapper {
 
 	public Class<?> getType(String key) {
 		if(object instanceof Map) {
-			return Object.class;
+			return type;
 		} else {
 			try {
 				Field field = object.getClass().getDeclaredField(key);

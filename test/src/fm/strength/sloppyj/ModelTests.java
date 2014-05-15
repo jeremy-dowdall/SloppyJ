@@ -19,10 +19,13 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
+@SuppressWarnings("serial")
 public class ModelTests {
 
 	@Test
@@ -208,6 +211,42 @@ public class ModelTests {
         String result = Jay.get(model).asJson();
 
         assertThat(result).isEqualTo("{\"name\":\"bob\",\"children\":[{\"age\":10},{\"age\":11}]}");
+    }
+
+    /** Map field of Objects */
+    public static class Class08 {
+        public String name;
+        public Map<String, Child> children;
+        public static class Child {
+        	public int age;
+        }
+    }
+    @Test
+    public void test_fromJson_withMapOfObjects() throws Exception {
+        Class08 result = Jay.get("name:bob,children:{child1:{age:10},child2:{age:11}}").as(Class08.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.name).isEqualTo("bob");
+        assertThat(result.children).hasSize(2);
+        assertThat(result.children.get("child1").age).isEqualTo(10);
+        assertThat(result.children.get("child2").age).isEqualTo(11);
+    }
+	@Test
+    public void test_fromModel_withMapOfObjects() throws Exception {
+    	final Class08.Child child1 = new Class08.Child();
+    	child1.age = 10;
+    	final Class08.Child child2 = new Class08.Child();
+    	child2.age = 11;
+        Class08 model = new Class08();
+        model.name = "bob";
+        model.children = new HashMap<String, ModelTests.Class08.Child>() {{
+        	put("child1", child1);
+        	put("child2", child2);        	
+        }};
+        
+        String result = Jay.get(model).asJson();
+
+        assertThat(result).isEqualTo("{\"name\":\"bob\",\"children\":{\"child1\":{\"age\":10},\"child2\":{\"age\":11}}}");
     }
 
 }
