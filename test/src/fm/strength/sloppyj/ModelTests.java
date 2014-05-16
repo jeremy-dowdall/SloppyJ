@@ -73,6 +73,14 @@ public class ModelTests {
 
         assertThat(result).isEqualTo("{\"name\":\"bob\",\"weight\":150}");
     }
+    @Test
+    public void test_fromModel_withNullFields() throws Exception {
+    	Class00 model = new Class00();
+    	
+        String result = Jay.get(model).asJson();
+
+        assertThat(result).isEqualTo("{\"weight\":0}");
+    }
 
     /** private, non-final fields */
     public static class Class01 {

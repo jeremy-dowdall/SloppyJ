@@ -72,8 +72,9 @@ public class JsonBuilder {
 		w.write(e);
 	}
 	
-    private boolean append(Object k, Object val, boolean sep) throws IOException {
+    private boolean append(Object k, Object v, boolean sep) throws IOException {
         if(k == null) throw new IllegalArgumentException(ERR_NULL_KEY);
+        if(v == null) return false;
         String key = k.toString();
         if(jay.include(key)) {
 			if(sep) w.write(',');
@@ -81,7 +82,7 @@ public class JsonBuilder {
         	w.write(jay.mapToJson(key));
         	w.write('"');
         	w.write(':');
-			appendValue(val);
+			appendValue(v);
 			return true;
         }
         return false;
