@@ -119,7 +119,7 @@ MyObject m = Jay.get("name:bob").as(MyObject.class);
 String json = Jay.get(m).asJson(); // -> {"name":"bob"}
 ```
 
-Ojbect fields can be of any visibility (public, private, etc), as well as final.
+Object fields can be of any visibility (public, private, etc), as well as final.
 Static and synthetics fields are skipped.
 
 Some caveats:
