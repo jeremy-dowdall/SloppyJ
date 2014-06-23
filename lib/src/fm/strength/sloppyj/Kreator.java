@@ -13,8 +13,8 @@ public abstract class Kreator {
 	private static final Kreator instance = load();
     private static Kreator load() {
     	Kreator k = loadJVM();
-    	if(k == null) loadDalvik(long.class);
-    	if(k == null) loadDalvik(int.class);
+    	if(k == null) k = loadDalvik(long.class);
+    	if(k == null) k = loadDalvik(int.class);
     	return k;
     }
     
@@ -40,11 +40,11 @@ public abstract class Kreator {
             Method getConstructorId = ObjectStreamClass.class.getDeclaredMethod("getConstructorId", Class.class);
             getConstructorId.setAccessible(true);
             final Method newInstance = ObjectStreamClass.class.getDeclaredMethod("newInstance", Class.class, idType);
-            final long constructorId = (Long) getConstructorId.invoke(null, Object.class);
+            final Object constructorId = getConstructorId.invoke(null, Object.class);
             newInstance.setAccessible(true);
             return new Kreator() {
                 <T> T createNewInstance(Class<T> type) throws InvocationTargetException, IllegalAccessException {
-                    return type.cast(newInstance.invoke(null, type, idType.cast(constructorId)));
+                    return type.cast(newInstance.invoke(null, type, constructorId));
                 }
             };
         } catch(Exception e) {
