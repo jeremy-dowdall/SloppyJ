@@ -357,6 +357,7 @@ public class JayTests {
 		assertThat(Jay.get("{a:null}").at("a").as(Boolean.class)).isNull();
 		assertThat(Jay.get("{}").at("a").as(boolean.class)).isEqualTo(false);
 		assertThat(Jay.get("{}").at("a").as(Boolean.class)).isNull();
+		assertThat(Jay.get("{a:true}").at("a").as(String.class)).isEqualTo("true");
 	}
 	
 	@Test
@@ -367,6 +368,7 @@ public class JayTests {
 		assertThat(Jay.get("{a:null}").at("a").as(Integer.class)).isNull();
 		assertThat(Jay.get("{}").at("a").as(int.class)).isEqualTo(0);
 		assertThat(Jay.get("{}").at("a").as(Integer.class)).isNull();
+		assertThat(Jay.get("{a:1}").at("a").as(String.class)).isEqualTo("1");
 	}
 	
 	@Test

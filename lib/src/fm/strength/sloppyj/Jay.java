@@ -81,7 +81,10 @@ public class Jay {
     		if(type == long.class) return (T) ((data instanceof Long) ? data : 0l);
     		return (T) ((data instanceof Integer) ? data : 0);
     	}
-    	return (type != null && type.isInstance(data)) ? type.cast(data) : null;
+    	if(type == String.class) {
+    		return (data != null) ? (T) data.toString() : null;
+    	}
+    	return (type != null && type.isInstance(data)) ? (T) data : null;
     }
     
     public String asJson() {
