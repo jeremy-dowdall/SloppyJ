@@ -256,5 +256,15 @@ public class ModelTests {
 
         assertThat(result).isEqualTo("{\"name\":\"bob\",\"children\":{\"child1\":{\"age\":10},\"child2\":{\"age\":11}}}");
     }
+	
+	public static class Class09 {
+		public String id;
+	}
+	@Test
+	public void test_fromJson_convertIntsToStrings() throws Exception {
+		Class09 result = Jay.get("id:123").as(Class09.class);
+		
+		assertThat(result.id).isEqualTo("123");
+	}
 
 }

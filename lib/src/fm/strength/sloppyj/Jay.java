@@ -153,9 +153,11 @@ public class Jay {
     
 
     Object adaptFromJson(ObjectWrapper wrapper, String key, Object json) {
+    	Class<?> type = (wrapper != null) ? wrapper.getType(key) : Object.class;
     	if(adapter != null) {
-    		Class<?> type = (wrapper != null) ? wrapper.getType(key) : Object.class;
     		if(type != null) return adapter.fromJson(type, json);
+    	} else {
+    		if(type == String.class && json != null) return json.toString();
     	}
     	return json;
     }
