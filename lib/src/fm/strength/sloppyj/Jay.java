@@ -78,8 +78,24 @@ public class Jay {
     	}
     	if(type.isPrimitive()) {
     		if(type == boolean.class) return (T) ((data instanceof Boolean) ? data : false);
-    		if(type == long.class) return (T) ((data instanceof Long) ? data : 0l);
+    		if(type == double.class) {
+    			if(data instanceof Double) return (T) data;
+    			if(data instanceof Float) return (T) new Double((Float) data);
+    			return (T) new Double(0.0);
+    		}
+    		if(type == float.class) return (T) ((data instanceof Float) ? data : 0.0);
+    		if(type == long.class) {
+    			if(data instanceof Long) return (T) data;
+    			if(data instanceof Integer) return (T) new Long((Integer) data);
+    			return (T) new Long(0);
+    		}
     		return (T) ((data instanceof Integer) ? data : 0);
+    	}
+    	if(type == Double.class && data instanceof Float) {
+    		return (T) new Double((Float) data);
+    	}
+    	if(type == Long.class && data instanceof Integer) {
+    		return (T) new Long((Integer) data);
     	}
     	if(type == String.class) {
     		return (data != null) ? (T) data.toString() : null;

@@ -267,4 +267,17 @@ public class ModelTests {
 		assertThat(result.id).isEqualTo("123");
 	}
 
+	public static class Class10 {
+		public long id;
+		public Long Id;
+	}
+	@Test
+	public void test_fromJson_convertLongs() throws Exception {
+		long id = System.currentTimeMillis();
+		Class10 result = Jay.get("id:"+id+",Id:"+id).as(Class10.class);
+		
+		assertThat(result.id).isEqualTo(id);
+		assertThat(result.Id).isEqualTo(id);
+	}
+
 }

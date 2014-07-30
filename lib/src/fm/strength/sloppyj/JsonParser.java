@@ -24,14 +24,12 @@ public class JsonParser {
 
     
     private final Jay jay;
-    private final Class<?> type;
     private final boolean array;
     private final String s;
     private int pos;
     
 	JsonParser(Jay jay, Class<?> type) {
 		this.jay = jay;
-		this.type = type;
 		this.array = type.isArray();
 		this.s = jay.data.toString();
 	}
@@ -180,8 +178,11 @@ public class JsonParser {
 			if(value.length() > 0) {
 				if(num) {
 					if(dec || exp) return Double.valueOf(value);
-					else if(type == long.class || type == Long.class) return Long.valueOf(value);
-					else return Integer.valueOf(value);
+					if(parent != null) {
+						Class<?> type = parent.getType(key);
+						if(type == long.class || type == Long.class) return Long.valueOf(value);
+					}
+					return Integer.valueOf(value);
 				}
 				if("?".equals(value)) return jay.nextArg();
 				if("null".equals(value)) return null;
