@@ -380,5 +380,10 @@ public class JayTests {
 		assertThat(Jay.get("{}").at("a").as(long.class)).isEqualTo(0);
 		assertThat(Jay.get("{}").at("a").as(Long.class)).isNull();
 	}
+	
+	@Test
+	public void test_unicodeInString() throws Exception {
+		assertThat(Jay.get("{a:\"test\\u0026ing\"}").at("a").as(String.class)).isEqualTo("test&ing");
+	}
 
 }

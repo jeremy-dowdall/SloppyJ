@@ -209,7 +209,8 @@ public class JsonParser {
     					break;
     				case 'u':
     					if(i+4 < end) {
-    						sb.append((char)Integer.parseInt(s.substring(i, i+4), 16));
+    						sb.append((char)Integer.parseInt(s.substring(i+1, i+5), 16));
+    						i = i+4;
     						break;
     					} // else fall through and throw exception
     				default:
