@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    compile 'fm.strength:sloppyj:+'
+    compile 'me.licious:sloppyj:+'
 }
 ```
 
